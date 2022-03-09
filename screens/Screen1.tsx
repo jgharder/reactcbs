@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleHappy } from '../store/actions/chat.actions';
 import { StackParamList } from "../typings/navigations";
@@ -24,6 +24,12 @@ export default function Screen1() {
             <Button title="Go to screen 2" onPress={() => navigation.navigate("Screen2")} />
             <Text>{isHappy.toString()}</Text>
             <Button title="Toggle happy" onPress={() => dispatch(toggleHappy())} />
+
+            <TextInput
+             
+            
+            />
+
         </View>
     );
 }
