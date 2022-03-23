@@ -32,9 +32,7 @@ export default function Screen1() {
     (state: any) => state.chat.chatrooms
   );
   const user: User = useSelector((state: any) => state.user.loggedInUser);
-  console.log(user);
 
-  //console.log("isHappy", isHappy);
   const dispatch = useDispatch();
 
   const handleAddChatroom = () => {

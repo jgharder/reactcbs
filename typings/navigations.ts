@@ -3,4 +3,6 @@ export type StackParamList = {
     Screen2: undefined;
     Screen3: undefined;
     login: undefined;
+    signinScreen: undefined;
+    signupScreen: undefined
 }
