@@ -12,10 +12,10 @@ const initialState: ReduxState = {
 const userReducer = (state: ReduxState = initialState, action: any) => {
     switch (action.type) {
         case SIGNUP:
-            console.log("hi");
 
-        //const user = {email: 'fakjsdflh', photoUrl: 'afdds' } as User
+        const user = {email:action.payload.email, id: action.payload.localId, idToken: action.payload.idToken} as User
 
+        return {...state, loggedInUser: user}
         default:
             return state;
     }
