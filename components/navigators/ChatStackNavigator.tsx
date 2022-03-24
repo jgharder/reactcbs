@@ -12,7 +12,8 @@ function ChatStackNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerTransparent: true,
+        headerTitle: ""
       }}
     >
       <Stack.Screen name="Screen1" component={Screen1} />

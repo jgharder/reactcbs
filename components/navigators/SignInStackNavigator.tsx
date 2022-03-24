@@ -9,7 +9,8 @@ function SignInStackNavigator() {
 
     return (
       <Stack.Navigator screenOptions={{
-        headerShown: false
+        headerTransparent: true,
+        headerTitle: ""
       }}>
         <Stack.Screen name="signinScreen" component={SigninScreen} />
         <Stack.Screen name="signupScreen" component={SignupScreen} />
