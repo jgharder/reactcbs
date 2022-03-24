@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Chatroom, Status } from "../entities/Chatroom";
 import { User } from "../entities/User";
-import { addChatroom, toggleHappy } from "../store/actions/chat.actions";
+import { addChatroom} from "../store/actions/chat.actions";
 import { signup } from "../store/actions/user.actions";
 import { StackParamList } from "../typings/navigations";
 
@@ -22,11 +22,8 @@ type ScreenNavigationType = NativeStackNavigationProp<
 >;
 
 export default function Screen1() {
-  const navigation = useNavigation<ScreenNavigationType>();
   const [title, onChangeTitle] = React.useState("");
-  const [email, onChangeEmail] = React.useState("");
-  const [password, onChangePassword] = React.useState("");
-
+  
   const isHappy = useSelector((state: any) => state.chat.isHappy); // subscribe to redux store and select attribute (isHappy)
   const chatrooms: Chatroom[] = useSelector(
     (state: any) => state.chat.chatrooms
@@ -45,21 +42,13 @@ export default function Screen1() {
     dispatch(addChatroom(chatroom));
   };
 
-  const handleAddEmailAndPassword = () => {
-    dispatch(signup(email, password));
-  };
+
   const renderChatroom = ({ item }: { item: any }) => <Text>{item.title}</Text>;
 
   return (
     <View style={styles.container}>
       <Text>Screen 1</Text>
-      <Button
-        title="Go to screen 2"
-        onPress={() => navigation.navigate("Screen2")}
-      />
-      <Text>{isHappy.toString()}</Text>
-      <Button title="Toggle happy" onPress={() => dispatch(toggleHappy())} />
-
+      
       <FlatList
         data={chatrooms}
         renderItem={renderChatroom}
@@ -73,18 +62,6 @@ export default function Screen1() {
       />
       <Button title="Create chatroom" onPress={handleAddChatroom} />
 
-      <TextInput
-        onChangeText={onChangeEmail}
-        value={email}
-        placeholder="Enter email"
-      />
-      <TextInput
-        onChangeText={onChangePassword}
-        value={password}
-        placeholder="Enter password"
-      />
-
-      <Button title="Create new user" onPress={handleAddEmailAndPassword} />
     </View>
   );
 }

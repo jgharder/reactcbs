@@ -4,7 +4,7 @@ import SignupScreen from "../../screens/SignupScreen";
 import SigninScreen from "../../screens/SigninScreen";
 import Screen2 from "../../screens/Screen2";
 import Screen3 from "../../screens/Screen3";
-import Screen1 from "../../screens/Screen1";
+import Screen1 from "../../screens/Chatroom";
 
 
 const Stack = createNativeStackNavigator<StackParamList>();

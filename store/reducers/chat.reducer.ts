@@ -1,5 +1,5 @@
 import { Chatroom } from "../../entities/Chatroom";
-import { ADD_CHATROOM, TOGGLE_HAPPY } from "../actions/chat.actions";
+import { ADD_CHATROOM } from "../actions/chat.actions";
 
 interface ReduxState {
     chatrooms: Chatroom[]
@@ -12,7 +12,7 @@ const initialState: ReduxState = {
     chatrooms: [],
     isHappy: false,
     counter: 0,
-    name: "Peter"
+    name: ""
 }
 
 interface ReduxAction {
@@ -22,17 +22,11 @@ interface ReduxAction {
 
 const chatReducer = (state: ReduxState = initialState, action: ReduxAction) => {
     switch (action.type) {
-        case TOGGLE_HAPPY:
-            console.log("hi");
-
-            return { ...state, isHappy: !state.isHappy }
 
         case ADD_CHATROOM:
             console.log(action.payload);
-            const chatroom = action.payload as Chatroom
-            //state.chatrooms.push(chatroom) // mutating state. Not allowed
-            return { ...state, chatrooms: [...state.chatrooms, chatroom] }
-
+            return { ...state, chatrooms: [...state.chatrooms, action.payload] }
+        // state.chatrooms.push(chatroom) // mutating state. Not allowed
 
         default:
             return state;
