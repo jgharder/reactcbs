@@ -1,10 +1,18 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { signin, signup } from "../store/actions/user.actions";
 import { StackParamList } from "../typings/navigations";
+import { Image } from "react-native";
 type ScreenNavigationType = NativeStackNavigationProp<
   StackParamList,
   "signinScreen"
@@ -20,27 +28,31 @@ export default function SigninScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>Sign in here </Text>
+      <Image style={styles.tinyLogo} source={require("../logo.png")} />
+      <Text style={styles.text}>Log in </Text>
 
       <TextInput
+        style={styles.inputField}
         value={email}
         placeholder="email"
         onChangeText={setEmail}
       />
       <TextInput
-        
+        style={styles.inputField}
         value={password}
         placeholder="password"
         onChangeText={setPassword}
         secureTextEntry={true}
       />
-      <Button
-        title="Sign in"
-        onPress={() => dispatch(signin(email, password))}
-      />
+      <Pressable
+        style={styles.submitBtn}
+        onPress={() => dispatch(signup(email, password))}
+      >
+        <Text style={styles.btnText}>Log in</Text>
+      </Pressable>
 
       <Button
-        title="Go to signup"
+        title="Don't have an account yet?"
         onPress={() => navigation.navigate("signupScreen")}
       />
     </View>
@@ -53,5 +65,40 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-  }
+    padding: 10,
+  },
+  tinyLogo: {
+    width: 114,
+    height: 114,
+    margin: 20,
+  },
+  submitBtn: {
+    marginTop: 20,
+    backgroundColor: "#5050A5",
+    borderRadius: 5,
+    borderColor: "#EEEEEE",
+    height: 61,
+    width: 360,
+    justifyContent: "center",
+  },
+  btnText: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  inputField: {
+    alignSelf: "stretch",
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "#EEEEEE",
+    backgroundColor: "#fff",
+    height: 70,
+  },
+  text: {
+    color: "#32305D",
+    marginBottom: 20,
+    alignSelf: "stretch",
+    fontWeight: "bold",
+    fontSize: 26,
+  },
 });

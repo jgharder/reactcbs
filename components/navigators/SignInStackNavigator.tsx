@@ -8,7 +8,9 @@ function SignInStackNavigator() {
   const Stack = createNativeStackNavigator<StackParamList>();
 
     return (
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{
+        headerShown: false
+      }}>
         <Stack.Screen name="signinScreen" component={SigninScreen} />
         <Stack.Screen name="signupScreen" component={SignupScreen} />
       </Stack.Navigator>
