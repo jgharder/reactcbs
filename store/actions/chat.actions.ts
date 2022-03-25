@@ -1,11 +1,8 @@
 import { Chatroom } from "../../entities/Chatroom";
 
-export const TOGGLE_HAPPY = 'TOGGLE_HAPPY';
 export const ADD_CHATROOM = 'ADD_CHATROOM';
 
-export const toggleHappy = () => {
-    return { type: TOGGLE_HAPPY };
-};
+
 
 export const addChatroom = (chatroom: Chatroom) => {
     return async (dispatch: any, getState: any) => {
@@ -14,7 +11,7 @@ export const addChatroom = (chatroom: Chatroom) => {
         console.log(token);
 
         const response = await fetch(
-            'https://cbscs-7a227-default-rtdb.europe-west1.firebasedatabase.app/chatrooms.json?auth=' + token, {
+            'https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/chatrooms.json?auth=' + token, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
