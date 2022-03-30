@@ -46,7 +46,7 @@ export default function SigninScreen() {
       />
       <Pressable
         style={styles.submitBtn}
-        onPress={() => dispatch(signup(email, password))}
+        onPress={() => dispatch(signin(email, password))}
       >
         <Text style={styles.btnText}>Log in</Text>
       </Pressable>
@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
   tinyLogo: {
     width: 114,
     height: 114,
-    margin: 20,
+    margin: 30,
+    marginTop: -50
   },
   submitBtn: {
     marginTop: 20,

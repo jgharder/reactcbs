@@ -86,7 +86,8 @@ const styles = StyleSheet.create({
   tinyLogo: {
     width: 114,
     height: 114,
-    margin: 20,
+    marginBottom: 30,
+    marginTop: 0,
   },
   inputField: {
     alignSelf: "stretch",
