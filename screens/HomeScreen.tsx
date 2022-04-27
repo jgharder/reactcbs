@@ -1,11 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import SignoutBtn  from '../components/signoutBtn';
 
 export default function HomeScreen() {
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Text>Home Screen</Text>
-        </View>
+            <SignoutBtn/>
+        </SafeAreaView>
+        
     );
 }
 

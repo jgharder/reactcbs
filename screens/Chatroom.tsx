@@ -1,58 +1,83 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   FlatList,
   StyleSheet,
   Text,
   TextInput,
-  View,
+  SafeAreaView,
+  Pressable,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Chatroom, Status } from "../entities/Chatroom";
 import { User } from "../entities/User";
-import { addChatroom} from "../store/actions/chat.actions";
-import { signup } from "../store/actions/user.actions";
+import { addChatroom, fetchChatrooms } from "../store/actions/chat.actions";
 import { StackParamList } from "../typings/navigations";
 
 type ScreenNavigationType = NativeStackNavigationProp<
   StackParamList,
-  "Screen1"
+  "Chatroom"
 >;
 
-export default function Screen1() {
+export default function ChatroomScreen() {
+  const navigation = useNavigation<ScreenNavigationType>();
   const [title, onChangeTitle] = React.useState("");
-  
-  const isHappy = useSelector((state: any) => state.chat.isHappy); // subscribe to redux store and select attribute (isHappy)
+
   const chatrooms: Chatroom[] = useSelector(
     (state: any) => state.chat.chatrooms
   );
+
   const user: User = useSelector((state: any) => state.user.loggedInUser);
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(fetchChatrooms());
+  }, []);
+
   const handleAddChatroom = () => {
     const chatroom: Chatroom = new Chatroom(
-      title,
-      Status.UNREAD,
-      "",
+      { text: "", title: title, status: Status.UNREAD, timestamp: new Date() },
       new Date()
     );
     dispatch(addChatroom(chatroom));
   };
 
+  const renderChatroom = ({ item }: { item: Chatroom }) => (
+    <>
+      <Pressable
+        style={styles.chatroomItemContainer}
+        onPress={() => navigation.navigate("MessageScreen")}
+      >
+        <Text style={styles.chatroomItemTitle}>{item.message.title}</Text>
+        <Text style={styles.chatroomItemMessage}>{item.message.text}</Text>
+        <Text style={styles.chatroomItemTime}>
+          {item.timestamp.getHours()}:{item.timestamp.getMinutes()}</Text>
+        <Text style={styles.chatroomItemDate}>
+          {item.timestamp.getDate()}/{item.timestamp.getMonth()}/
+          {item.timestamp.getFullYear()}
+        </Text>
+      </Pressable>
 
-  const renderChatroom = ({ item }: { item: any }) => <Text>{item.title}</Text>;
+      {/* <Pressable
+       style={styles.deleteBtn}
+        onPress={() => {
+          dispatch(deleteChatroom());
+        }}
+      >
+        <Text>Delete Chatroom</Text>
+      </Pressable> */}
+    </>
+  );
 
   return (
-    <View style={styles.container}>
-      <Text>Screen 1</Text>
-      
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={chatrooms}
         renderItem={renderChatroom}
-        keyExtractor={(item) => item.title} // chatroom titles must be unique when I do this.
+        keyExtractor={(item) => item.message.title} // chatroom titles must be unique when I do this.
       />
 
       <TextInput
@@ -61,12 +86,43 @@ export default function Screen1() {
         placeholder="Chatroom name"
       />
       <Button title="Create chatroom" onPress={handleAddChatroom} />
-
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  chatroomItemContainer: {
+    marginVertical: 5,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    width: 337,
+    height: 60,
+  },
+  chatroomItemTitle: {
+    fontWeight: "bold",
+    fontSize: 20,
+    padding: 5,
+  },
+  chatroomItemMessage: {},
+  chatroomItemDate: {
+    fontSize: 12,
+    padding: 5,
+    //position right bottom of the container
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+  },
+  chatroomItemTime: {
+    padding: 5,
+    fontSize: 12,
+    position: "absolute",
+    bottom: 15,
+    right: 0,
+
+  },
+  
+
   container: {
     flex: 1,
     backgroundColor: "#fff",
@@ -74,3 +130,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+function deleteChatroom(): any {
+  return {
+    type: "DELETE_CHATROOM",
+  };
+}
+

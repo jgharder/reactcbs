@@ -1,9 +1,13 @@
-
 export class Message {
-    constructor(public title: string, public status: Status,
-        public message: string, public timestamp: Date) { }
+  constructor(
+    public title: string,
+    public status: Status,
+    public text: string,
+    public timestamp: Date
+  ) {}
 }
 
 export enum Status {
-    READ = "READ", UNREAD = "UNREAD"
+  READ = "READ",
+  UNREAD = "UNREAD",
 }

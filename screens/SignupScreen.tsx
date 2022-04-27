@@ -1,10 +1,20 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View, Image, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Image,
+  Pressable,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { signup } from "../store/actions/user.actions";
+import * as SecureStorage from "expo-secure-store";
+import { saveSecureStorageUser, signup } from "../store/actions/user.actions";
 import { StackParamList } from "../typings/navigations";
+
 
 type ScreenNavigationType = NativeStackNavigationProp<
   StackParamList,
@@ -12,13 +22,29 @@ type ScreenNavigationType = NativeStackNavigationProp<
 >;
 
 export default function SignupScreen() {
-  const navigation = useNavigation<ScreenNavigationType>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const dispatch = useDispatch();
-  const loggedInUser = useSelector((state: any) => state.user.loggedInUser);
-  const token = useSelector((state: any) => state.user.idToken);
+
+  async function readPersistedUserInfo() {
+    const token = await SecureStorage.getItemAsync('idToken');
+    const userJson = await SecureStorage.getItemAsync('user');
+    let user = null;
+    if (userJson) {
+        user = JSON.parse(userJson);
+    }
+    if (user) {
+        // then we have a priv. login
+        // restore the signup by updating the redux store based on usre and token.
+        dispatch(saveSecureStorageUser(user, token!))
+    }
+}
+
+useEffect(() => {
+    readPersistedUserInfo();
+}, [])
+ 
 
   return (
     <View style={styles.container}>
@@ -49,21 +75,17 @@ export default function SignupScreen() {
       <Pressable
         style={styles.submitBtn}
         onPress={() => dispatch(signup(email, password))}
-        >
-            <Text
-            style={styles.btnText}>
-                Get access
-            </Text>
-        </Pressable>
+      >
+        <Text style={styles.btnText}>Get access</Text>
+      </Pressable>
 
-        {password !== repeatPassword && (
-          <Text style={styles.passwordMatch}>
-            {" "}
-            
-            {"   "}
-            Passwords don't match{" "}
-          </Text>
-        )}
+      {password !== repeatPassword && (
+        <Text style={styles.passwordMatch}>
+          {" "}
+          {"   "}
+          Passwords don't match{" "}
+        </Text>
+      )}
     </View>
   );
 }
@@ -74,7 +96,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    padding: 10
+    padding: 10,
   },
   text: {
     color: "#32305D",
@@ -106,10 +128,10 @@ const styles = StyleSheet.create({
     width: 360,
     justifyContent: "center",
   },
-  btnText:{
-      color: "#fff",
-      fontWeight: "bold",
-      marginLeft: 10
+  btnText: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginLeft: 10,
   },
   passwordMatch: {
     color: "#B10024",

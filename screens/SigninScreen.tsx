@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Pressable,
@@ -10,9 +10,15 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { signin, signup } from "../store/actions/user.actions";
+import {
+  saveSecureStorageUser,
+  signin,
+  signup,
+} from "../store/actions/user.actions";
 import { StackParamList } from "../typings/navigations";
 import { Image } from "react-native";
+import * as SecureStorage from "expo-secure-store";
+
 type ScreenNavigationType = NativeStackNavigationProp<
   StackParamList,
   "signinScreen"
@@ -25,6 +31,24 @@ export default function SigninScreen() {
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state: any) => state.user.loggedInUser);
   const token = useSelector((state: any) => state.user.idToken);
+
+  async function readPersistedUserInfo() {
+    const token = await SecureStorage.getItemAsync("idToken");
+    const userJson = await SecureStorage.getItemAsync("user");
+    let user = null;
+    if (userJson) {
+      user = JSON.parse(userJson);
+    }
+    if (user) {
+      // then we have a priv. login
+      // restore the signup by updating the redux store based on usre and token.
+      dispatch(saveSecureStorageUser(user, token!));
+    }
+  }
+
+  useEffect(() => {
+    readPersistedUserInfo();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -71,7 +95,7 @@ const styles = StyleSheet.create({
     width: 114,
     height: 114,
     margin: 30,
-    marginTop: -50
+    marginTop: -50,
   },
   submitBtn: {
     marginTop: 20,

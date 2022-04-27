@@ -1,5 +1,10 @@
 import { User } from "../../entities/User";
-import { SIGNIN, SIGNUP } from "../actions/user.actions";
+import {
+  SAVE_SECURE_STORAGE_USER,
+  SIGNIN,
+  SIGNOUT,
+  SIGNUP,
+} from "../actions/user.actions";
 
 interface ReduxState {
   loggedInUser: User | undefined;
@@ -13,14 +18,29 @@ const initialState: ReduxState = {
 
 const userReducer = (state: ReduxState = initialState, action: any) => {
   switch (action.type) {
+    case SAVE_SECURE_STORAGE_USER:
+      return {
+        ...state,
+        loggedInUser: action.payload.user,
+        idToken: action.payload.idToken,
+      };
+
     case SIGNUP:
-      const user = new User(action.payload.email, "", "");
-      //state.loggedInUser = user; // MUTATION!!!!
-      return { ...state, loggedInUser: user, idToken: action.payload.idToken };
+      return {
+        ...state,
+        loggedInUser: action.payload.user,
+        idToken: action.payload.idToken,
+      };
 
     case SIGNIN:
-        const signedinUser = new User(action.payload.email, "", "");
-        return {...state, loggedInUser: signedinUser, idToken: action.payload.idToken}
+      return {
+        ...state,
+        loggedInUser: action.payload.user,
+        idToken: action.payload.idToken,
+      };
+
+    case SIGNOUT:
+      return { ...state, loggedInUser: null, idToken: null };
 
     default:
       return state;

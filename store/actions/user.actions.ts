@@ -1,6 +1,11 @@
 import { FirebaseSignupSuccess } from "../../entities/FirebaseSignupSuccess";
+import * as SecureStore from "expo-secure-store";
+import { User } from "../../entities/User";
 
 export const SIGNUP = "SIGNUP";
+export const SIGNIN = "SIGNIN";
+export const SIGNOUT = "SIGNOUT";
+export const SAVE_SECURE_STORAGE_USER = "SAVE_SECURE_STORAGE_USER";
 
 export const signup = (email: string, password: string) => {
   return async (dispatch: any) => {
@@ -28,16 +33,16 @@ export const signup = (email: string, password: string) => {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
       console.log("data from server", data);
 
-      dispatch({
-        type: SIGNUP,
-        payload: { email: data.email, idToken: data.idToken },
-      });
+      const user = new User(data.email, "", "");
+
+      await SecureStore.setItemAsync("idToken", data.idToken);
+      await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
+
+      dispatch({ type: SIGNUP, payload: { user, idToken: data.idToken } });
+      
     }
   };
 };
-
-export const SIGNIN = "SIGNIN";
-
 
 export const signin = (email: string, password: string) => {
   return async (dispatch: any) => {
@@ -65,10 +70,23 @@ export const signin = (email: string, password: string) => {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
       console.log("data from server", data);
 
-      dispatch({
-        type: SIGNIN,
-        payload: { email: data.email, idToken: data.idToken },
-      });
+      const user = new User(data.email, "", "");
+
+      await SecureStore.setItemAsync("idToken", data.idToken);
+      await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
+
+      dispatch({ type: SIGNIN, payload: { user, idToken: data.idToken } });
     }
   };
+};
+
+export const saveSecureStorageUser = (user: User, idToken: string) => {
+  return { type: SAVE_SECURE_STORAGE_USER, payload: { user, idToken } };
+};
+
+export const signout = () => {
+  SecureStore.deleteItemAsync("idToken");
+  SecureStore.deleteItemAsync("user");
+
+  return { type: SIGNOUT };
 };
