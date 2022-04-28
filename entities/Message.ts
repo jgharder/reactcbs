@@ -3,7 +3,8 @@ export class Message {
     public title: string,
     public status: Status,
     public text: string,
-    public timestamp: Date
+    public timestamp: Date,
+    public id?: string
   ) {}
 }
 

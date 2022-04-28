@@ -1,33 +1,44 @@
 import React, { useEffect } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  Button,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { addMessage, fetchMessages } from "../store/actions/messages.actions";
+import { addMessage, fetchMessages } from "../store/actions/chat.actions";
 import { Message, Status } from "../entities/Message";
+import { Chatroom } from "../entities/Chatroom";
 
-export default function MessageSreen() {
+  const MessageScreen = (props: any) =>{
   const dispatch = useDispatch();
-const [title, onChangeTitle] = React.useState("title");
-  const [text, onChangeText] = React.useState("text");
-  const messages = useSelector((state: any) => state.messages);
+  const [title, onChangeTitle] = React.useState("");
+  const [text, onChangeText] = React.useState("");
 
+  const {id} = props.route.params;
+
+  const chatMessages = useSelector((state: any) => state.chat.chatrooms).find((room:Chatroom) => room.id == id).messages;
+  // console.log(id)
+  //   console.log(chatMessages);
+    console.log(useSelector((state: any) => state.chat.chatrooms).find((room:Chatroom)=>room.id === id))
+  
   useEffect(() => {
-    dispatch(fetchMessages());
+    dispatch(fetchMessages(id));
   }, []);
 
   const handleAddMessage = () => {
     const message: Message = new Message(
-      title,
-      Status.UNREAD,
-      text,
-      new Date()
-    );
-    dispatch(addMessage(message));
+      title, Status.UNREAD,text, new Date())
+    dispatch(addMessage(id, message));
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
     <>
       <Text>{item.title}</Text>
-      <Text>{item.text}</Text>
+      <Text>{item.status}</Text>
       <Text>
         {item.timestamp.getDate()}/{item.timestamp.getMonth()}/
         {item.timestamp.getFullYear()}
@@ -37,14 +48,19 @@ const [title, onChangeTitle] = React.useState("title");
 
   return (
     <>
-      <View style={styles.container}>
-        {/* render messages */}
-        <FlatList
-          data={messages}
+      <SafeAreaView style={styles.container}>
+      {chatMessages? <Text>No messages</Text>:  <FlatList
+          data={chatMessages}
           renderItem={renderMessage}
-          keyExtractor={(item) => item.title} // chatroom titles must be unique when I do this.
+          keyExtractor={(item:any) => item.id}
+        />}
+        <TextInput
+          onChangeText={onChangeTitle}
+          value={title}
+          placeholder="Write new message"
         />
-      </View>
+        <Button title="Submit" onPress={handleAddMessage} />
+      </SafeAreaView>
     </>
   );
 }
@@ -57,3 +73,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+export default MessageScreen;

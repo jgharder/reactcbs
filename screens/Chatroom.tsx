@@ -11,7 +11,7 @@ import {
   Pressable,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { Chatroom, Status } from "../entities/Chatroom";
+import { Chatroom } from "../entities/Chatroom";
 import { User } from "../entities/User";
 import { addChatroom, fetchChatrooms } from "../store/actions/chat.actions";
 import { StackParamList } from "../typings/navigations";
@@ -21,13 +21,15 @@ type ScreenNavigationType = NativeStackNavigationProp<
   "Chatroom"
 >;
 
-export default function ChatroomScreen() {
+const ChatroomScreen = (props:any) => {
   const navigation = useNavigation<ScreenNavigationType>();
   const [title, onChangeTitle] = React.useState("");
 
-  const chatrooms: Chatroom[] = useSelector(
-    (state: any) => state.chat.chatrooms
+  const chat = useSelector(
+    (state: any) => state.chat
   );
+
+  const chatrooms: Chatroom[] = chat.chatrooms;
 
   const user: User = useSelector((state: any) => state.user.loggedInUser);
 
@@ -38,10 +40,8 @@ export default function ChatroomScreen() {
   }, []);
 
   const handleAddChatroom = () => {
-    const chatroom: Chatroom = new Chatroom(
-      { text: "", title: title, status: Status.UNREAD, timestamp: new Date() },
-      new Date()
-    );
+    const chatroom: Chatroom = new Chatroom(title, [], new Date());
+
     dispatch(addChatroom(chatroom));
   };
 
@@ -49,12 +49,16 @@ export default function ChatroomScreen() {
     <>
       <Pressable
         style={styles.chatroomItemContainer}
-        onPress={() => navigation.navigate("MessageScreen")}
+        onPress={() => {
+           {navigation.navigate("MessageScreen", { id: item.id } )
+           console.log("item.ID = ",item.id);
+          }
+        }}
       >
-        <Text style={styles.chatroomItemTitle}>{item.message.title}</Text>
-        <Text style={styles.chatroomItemMessage}>{item.message.text}</Text>
+        <Text style={styles.chatroomItemTitle}>{item.title}</Text>
         <Text style={styles.chatroomItemTime}>
-          {item.timestamp.getHours()}:{item.timestamp.getMinutes()}</Text>
+          {item.timestamp.getHours()}:{item.timestamp.getMinutes()}
+        </Text>
         <Text style={styles.chatroomItemDate}>
           {item.timestamp.getDate()}/{item.timestamp.getMonth()}/
           {item.timestamp.getFullYear()}
@@ -77,7 +81,7 @@ export default function ChatroomScreen() {
       <FlatList
         data={chatrooms}
         renderItem={renderChatroom}
-        keyExtractor={(item) => item.message.title} // chatroom titles must be unique when I do this.
+        keyExtractor={(item:any) => item.title} // chatroom titles must be unique when I do this.
       />
 
       <TextInput
@@ -119,9 +123,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 15,
     right: 0,
-
   },
-  
 
   container: {
     flex: 1,
@@ -130,9 +132,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-function deleteChatroom(): any {
-  return {
-    type: "DELETE_CHATROOM",
-  };
-}
 
+
+export default ChatroomScreen;

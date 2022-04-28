@@ -31,7 +31,7 @@ export const signup = (email: string, password: string) => {
       //dispatch({type: SIGNUP_FAILED, payload: 'something'})
     } else {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
-      console.log("data from server", data);
+      // console.log("data from server", data);
 
       const user = new User(data.email, "", "");
 
@@ -68,7 +68,7 @@ export const signin = (email: string, password: string) => {
       //dispatch({type: SIGNUP_FAILED, payload: 'something'})
     } else {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
-      console.log("data from server", data);
+      // console.log("data from server", data);
 
       const user = new User(data.email, "", "");
 

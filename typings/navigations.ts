@@ -1,6 +1,6 @@
 export type StackParamList = {
     Chatroom: undefined;
-    MessageScreen: undefined;
+    MessageScreen: any | undefined;
     Screen3: undefined;
     login: undefined;
     signinScreen: undefined;
