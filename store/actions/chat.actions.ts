@@ -106,12 +106,12 @@ export const fetchMessages = (id: string) => {
     if (!response.ok) {
       console.log("error fetching messages");
       //dispatch({type: FETCH_CHATROOM_FAILED, payload: 'something'})
-      dispatch({ type: FETCH_MESSAGES, payload: [] });
+      // dispatch({ type: FETCH_MESSAGES, payload: [] });
     } else {
       const data = await response.json(); // json to javascript
       let messages: Message[] = [];
       for (const key in data) {
-        const obj = data[key];
+        let obj = data[key];
         messages.push(
           new Message(
             obj.title,
@@ -122,10 +122,10 @@ export const fetchMessages = (id: string) => {
           )
         );
       }
-
-      dispatch({ type: FETCH_MESSAGES, payload: messages });
-
       // console.log("data from server", messages);
+      dispatch({ type: FETCH_MESSAGES, payload: {messages, id} });
+
+      
     }
   };
 };
@@ -158,7 +158,7 @@ export const addMessage = (id: string, message: Message) => {
 
       message.id = data.name;
 
-      dispatch({ type: ADD_MESSAGE, payload: message });
+      dispatch({ type: ADD_MESSAGE, payload: { message, id } });
     }
   };
 };

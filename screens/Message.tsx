@@ -19,15 +19,17 @@ import { Chatroom } from "../entities/Chatroom";
   const [text, onChangeText] = React.useState("");
 
   const {id} = props.route.params;
-
-  const chatMessages = useSelector((state: any) => state.chat.chatrooms).find((room:Chatroom) => room.id == id).messages;
-  // console.log(id)
-  //   console.log(chatMessages);
-    console.log(useSelector((state: any) => state.chat.chatrooms).find((room:Chatroom)=>room.id === id))
   
   useEffect(() => {
     dispatch(fetchMessages(id));
   }, []);
+
+  const chatMessages = useSelector((state: any ) => state.chat.chatrooms).find((room:Chatroom) => room.id == id).messages;
+  // console.log(id)
+    // console.log(useSelector((state: any ) => state.chat));
+    // console.log(useSelector((state: any) => state.chat.chatrooms).find((room:Chatroom)=>room.id === id))
+  console.log(chatMessages);
+  
 
   const handleAddMessage = () => {
     const message: Message = new Message(
