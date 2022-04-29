@@ -18,7 +18,7 @@ const initialState: ReduxState = {
 
 interface ReduxAction {
     type: string,
-    payload?: number | string | Chatroom | Message
+    payload?: number | string | Chatroom | Message | any
 }
 
 const chatReducer = (state: ReduxState = initialState, action: ReduxAction) => {
@@ -34,12 +34,39 @@ const chatReducer = (state: ReduxState = initialState, action: ReduxAction) => {
             return { ...state, chatrooms: action.payload }
 
         case ADD_MESSAGE:
+            let chatroom: any = state.chatrooms.find(room => room.id === action.payload.id)
+           
+            // console.log("chat reducer add message", chatroom);
+            // console.log(action.payload.message);
+
+            const chatmessages: Message[] = [...chatroom.messages, action.payload.message];
             
-            return { ...state, messages: [...state.messages, action.payload] }
+
+            const newChatRoom: Chatroom = { ...chatroom};
+            newChatRoom.messages = chatmessages;
+            // console.log("new chatroom", newChatRoom);
+
+            // const chatroomArray: Chatroom[] = [...state.chatrooms];
+            // chatroomArray.push(newChatRoom);
+            // console.log(chatroomArray);
+            const index: number = state.chatrooms.findIndex(room => room.id === action.payload.id);
+            const chatroomArray: Chatroom[] = [...state.chatrooms];
+            chatroomArray.splice(index, 1, newChatRoom);
+            
+
+                
+            return { ...state, chatrooms: chatroomArray }
+            // return { ...state, messages: [...state.messages, action.payload] }
 
         case FETCH_MESSAGES:
-
-            return { ...state, messages: action.payload }
+            // chatroom = state.chatrooms.find(room => room.id === action.payload.id)
+            // // console.log(chatroom);
+            // const AnotherNewChatroom = { ...chatroom};
+            // console.log(AnotherNewChatroom.messages)
+            // const chatRoomArray = [AnotherNewChatroom, action.payload.messages];
+            // console.log(" chatroom array", chatRoomArray[0].messages);
+            // // console.log(action.payload.messages);
+            return { ...state, messages: action.payload}
 
         default:
             return state;

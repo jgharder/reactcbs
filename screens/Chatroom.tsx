@@ -57,7 +57,7 @@ const ChatroomScreen = (props:any) => {
       >
         <Text style={styles.chatroomItemTitle}>{item.title}</Text>
         <Text style={styles.chatroomItemTime}>
-          {item.timestamp.getHours()}:{item.timestamp.getMinutes()}
+          {item.timestamp.getHours()}:{item.timestamp.getMinutes().toString().padStart(2, '0')}
         </Text>
         <Text style={styles.chatroomItemDate}>
           {item.timestamp.getDate()}/{item.timestamp.getMonth()}/
