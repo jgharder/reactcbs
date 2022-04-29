@@ -3,6 +3,9 @@ import { Message } from "../../entities/Message";
 
 export const ADD_CHATROOM = "ADD_CHATROOM";
 export const FETCH_CHATROOMS = "FETCH_CHATROOMS";
+export const FETCH_MESSAGES = "FETCH_MESSAGES";
+export const ADD_MESSAGE = "ADD_MESSAGE";
+
 
 export const fetchChatrooms = () => {
   return async (dispatch: any, getState: any) => {
@@ -28,11 +31,18 @@ export const fetchChatrooms = () => {
       let chatrooms: Chatroom[] = [];
       for (const key in data) {
         let obj = data[key];
+        let messages = [];
+        for (const key2 in obj.messages) {
+          let message = obj.messages[key2];
+          messages.push(new Message(message.title, message.status, message.text, new Date(message.timestamp), key2));
+        }
         // create Chatroom objects and push them into the array chatrooms.
         chatrooms.push(
-          new Chatroom(obj.title, [], new Date(obj.timestamp), key)
+          new Chatroom(obj.title, messages, new Date(obj.timestamp), key)
         );
       }
+
+      
 
       // console.log("data from server", chatrooms);
 
@@ -85,8 +95,6 @@ export const addChatroom = (chatroom: Chatroom) => {
   };
 };
 
-export const FETCH_MESSAGES = "FETCH_MESSAGES";
-export const ADD_MESSAGE = "ADD_MESSAGE";
 
 export const fetchMessages = (id: string) => {
   return async (dispatch: any, getState: any) => {
