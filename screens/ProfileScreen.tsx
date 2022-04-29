@@ -3,6 +3,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 import { Text, SafeAreaView, Button, StyleSheet } from "react-native";
 import { StackParamList } from "../typings/navigations";
+import  SignoutBtn from "../components/SignoutBtn";
 
 type ScreenNavigationType = NativeStackNavigationProp<
   StackParamList,
@@ -19,6 +20,7 @@ export default function ProfileScreen() {
         title="Edit profile"
         onPress={() => navigation.navigate("EditProfile")}
       ></Button>
+      <SignoutBtn/>
     </SafeAreaView>
   );
 }

@@ -5,7 +5,7 @@ import { signout } from '../store/actions/user.actions';
 
 
 
-export default function signoutBtn() {
+export default function SignoutBtn() {
   const dispatch = useDispatch();
 
   return (
