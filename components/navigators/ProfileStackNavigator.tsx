@@ -13,7 +13,7 @@ function ProfileStackNavigator() {
         headerTitle: ""
       }}
     >
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="YourProfile" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       
     </Stack.Navigator>

@@ -4,6 +4,7 @@ import {
   SIGNIN,
   SIGNOUT,
   SIGNUP,
+  UPDATE_EMAIL,
 } from "../actions/user.actions";
 
 interface ReduxState {
@@ -41,6 +42,10 @@ const userReducer = (state: ReduxState = initialState, action: any) => {
 
     case SIGNOUT:
       return { ...state, loggedInUser: null, idToken: null };
+
+    case UPDATE_EMAIL:
+      // console.log("action.payload", action.payload.email);
+      return { ...state, loggedInUser: action.payload };
 
     default:
       return state;

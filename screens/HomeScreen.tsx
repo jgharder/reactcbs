@@ -1,12 +1,12 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import SignoutBtn  from '../components/signoutBtn';
+import SignoutBtn  from '../components/SignoutBtn';
 
 export default function HomeScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <Text>Home Screen</Text>
-            <SignoutBtn/>
+            
         </SafeAreaView>
         
     );

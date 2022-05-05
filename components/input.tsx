@@ -1,18 +1,28 @@
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { StyleSheet, Text, TextInput } from 'react-native'
+import { NativeSyntheticEvent, StyleSheet, Text, TextInput, TextInputChangeEventData } from 'react-native'
 
 
-const Input = (props: any) => {
-const [text, setText] = useState(props.inputValue);
+
+const Input = ({
+  title,
+  value,
+  onChange,
+  errorMessage
+}: {
+  title: string,
+  value: string,
+  onChange: (e: NativeSyntheticEvent<TextInputChangeEventData>) => void;
+  errorMessage: string
+}) => {
 
   return (
       <SafeAreaView style={styles.container}>
             <Text>
-                {props.title}
+                {title}
             </Text>
-            <TextInput value={text} onChangeText={setText} />
-            {text=== ""? <Text>{props.error}</Text>: <Text></Text>}
+            <TextInput value={value} onChange={onChange} />
+            {!value ? <Text style={{color: "red"}}>{errorMessage}</Text>: <Text></Text>}
         </SafeAreaView>
 
   )
