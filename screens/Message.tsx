@@ -24,23 +24,32 @@ const MessageScreen = (props: any) => {
     dispatch(fetchMessages(id));
   }, []);
 
-  const chatMessages = useSelector((state: any) => state.chat.chatrooms).find((room: Chatroom) => room.id == id).messages;
-
-
-
+  const chatMessages = useSelector((state: any) => state.chat.chatrooms).find(
+    (room: Chatroom) => room.id == id
+  ).messages;
 
   const handleAddMessage = () => {
     const message: Message = new Message(
-      title, Status.UNREAD, text, new Date())
+      title,
+      Status.UNREAD,
+      text,
+      new Date()
+    );
     dispatch(addMessage(id, message));
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={styles.messageContainer}>
-      <Text style={styles.textTitle}>{item.title}</Text>
-      <Text style={styles.time}>{item.timestamp.getHours()}:{item.timestamp.getMinutes().toString().padStart(2, '0')}</Text>
+      <Text style={styles.textTitle}>
+        {item.title}
+      </Text>
+      <Text style={styles.time}>
+        {item.timestamp.getHours()}:
+        {item.timestamp.getMinutes().toString().padStart(2, "0")}
+      </Text>
       <Text style={styles.timeStamp}>
-        {item.timestamp.getDate()}/{item.timestamp.getMonth()}/{item.timestamp.getFullYear()}
+        {item.timestamp.getDate()}/{item.timestamp.getMonth()}/
+        {item.timestamp.getFullYear()}
       </Text>
     </View>
   );
@@ -49,7 +58,6 @@ const MessageScreen = (props: any) => {
     <>
       <SafeAreaView style={styles.container}>
         <View style={styles.flatList}>
-
           <FlatList
             data={chatMessages}
             renderItem={renderMessage}
@@ -63,25 +71,20 @@ const MessageScreen = (props: any) => {
             value={title}
             placeholder="Write new message"
           />
-          <Pressable style={styles.messageInputBtn} onPress={handleAddMessage}><Text>Send Message</Text></Pressable>
+          <Pressable style={styles.messageInputBtn} onPress={handleAddMessage}>
+            <Text>Send Message</Text>
+          </Pressable>
         </View>
       </SafeAreaView>
     </>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  flatList:{
+  flatList: {
     flex: 6,
     alignItems: "flex-end",
     justifyContent: "center",
-  },
-
-  textInputAndBtn: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
   },
 
   container: {
@@ -95,15 +98,16 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 5,
     minHeight: 50,
-    height: "auto",
-    maxWidth: 200,
+    maxWidth: 300,
     paddingVertical: 10,
   },
 
   textTitle: {
     fontSize: 16,
-    paddingLeft: 10,
-    maxWidth: "70%",
+    marginVertical: 3,
+    marginHorizontal: 10,
+    maxWidth: "80%",
+    lineHeight : 21,
   },
 
   timeStamp: {
@@ -126,8 +130,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 
+  textInputAndBtn: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   messageInput: {
-    paddingVertical: 10, 
+    paddingVertical: 10,
     textAlign: "center",
     borderTopWidth: 1,
     width: "100%",
