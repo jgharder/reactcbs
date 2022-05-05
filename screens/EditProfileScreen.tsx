@@ -1,24 +1,20 @@
-import React from 'react'
-import { Text, StyleSheet, SafeAreaView, Pressable } from 'react-native'
-import Input from '../components/Input';
-import { RootState } from '../App';
-import { updateEmail } from '../store/actions/user.actions';
+import React from "react";
+import { Text, StyleSheet, SafeAreaView, Pressable } from "react-native";
+import Input from "../components/Input";
+import { RootState } from "../App";
+import { refreshIdToken, updateEmail } from "../store/actions/user.actions";
 import { useDispatch, useSelector } from "react-redux";
 
-
-
-
-
-
 const EditProfileScreen = () => {
-
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.loggedInUser);
   const [email, setEmail] = React.useState(user.email);
 
-  function handleUpdateEmail(email: string, idToken: string) {
+  async function handleUpdateEmail(email: string) {
     console.log("input field email", email);
-    dispatch(updateEmail(email, idToken));
+    const refreshedRespData = await dispatch(refreshIdToken(user.refreshToken));
+    console.log("refreshRespData(): ",refreshedRespData)
+    await dispatch(updateEmail(email, refreshedRespData));
   }
 
   function onChangeEmail(setter: any, event: any) {
@@ -26,15 +22,26 @@ const EditProfileScreen = () => {
     setter(value);
   }
 
-
   return (
     <SafeAreaView style={styles.container}>
-      <Input title="What is your email?" value={email} onChange={(event) => { onChangeEmail(setEmail, event) }} errorMessage="Please enter your email" />
-      <Text onPress={() => {handleUpdateEmail(email, user.idToken) }}>Confirm</Text>
+      <Input
+        title="What is your email?"
+        value={email}
+        onChange={(event) => {
+          onChangeEmail(setEmail, event);
+        }}
+        errorMessage="Please enter your email"
+      />
+      <Text
+        onPress={() => {
+          handleUpdateEmail(email);
+        }}
+      >
+        Confirm
+      </Text>
     </SafeAreaView>
-  )
-}
-
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -45,7 +52,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
-
-export default EditProfileScreen
+export default EditProfileScreen;

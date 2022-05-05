@@ -40,7 +40,6 @@ export const signup = (email: string, password: string) => {
       await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
 
       dispatch({ type: SIGNUP, payload: { user, idToken: data.idToken } });
-      
     }
   };
 };
@@ -69,7 +68,7 @@ export const signin = (email: string, password: string) => {
       //dispatch({type: SIGNUP_FAILED, payload: 'something'})
     } else {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
-      // console.log("data from server", data);
+      console.log("data from server", data);
 
       const user = new User(data.email, data.refreshToken, data.idToken);
 
@@ -92,42 +91,70 @@ export const signout = () => {
   return { type: SIGNOUT };
 };
 
-export const updateEmail = (email: string, idToken: string) => {
+export const updateEmail = (email: string, idToken: any) => {
   return async (dispatch: any) => {
-    
-    const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE',
-    {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        idToken: idToken,
-        email: email,
-        returnSecureToken: true,
-        
-      })
-    }
+    const response = await fetch(
+      "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idToken: idToken,
+          email: email,
+          returnSecureToken: true,
+        }),
+      }
     );
-   
+
     if (!response.ok) {
-      console.log("error",await response.json());
+      console.log("error", await response.json());
     } else {
       const data = await response.json();
 
-      
-      console.log("idToken",idToken)
-      // console.log(data);
+      //console.log("idToken",idToken)
+      console.log("data from updateEmail():", data);
       // console.log(user);
-      
-      
+
       // const securestoreuser = await SecureStore.getItemAsync("user")
       // const securestoreuserjson = JSON.parse(securestoreuser!);
       // console.log("securestore" , securestoreuserjson);
-      
+     
+      const user = new User(data.email, data.refreshToken, idToken);
+      await SecureStore.setItemAsync("idToken", idToken);
+      await SecureStore.setItemAsync("user", JSON.stringify(user));
 
-      dispatch({type: UPDATE_EMAIL, payload: {email, idToken}});
+       dispatch({ type: UPDATE_EMAIL, payload: { email: data.email, idToken } });
     }
-    
-  }
+  };
+};
+
+export const refreshIdToken = (refreshToken: string) => {
+  return async () => {
+    const response = await fetch(
+      "https://securetoken.googleapis.com/v1/token?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          grant_type: "refresh_token",
+          refresh_token: refreshToken,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      console.log("error", await response.json());
+      
+    } else {
+      const data = await response.json();
+      console.log("data from refreshIdToken(): ", data);
+      const idToken = data.id_token;
+      console.log("idToken returned from refreshIdToken():",idToken)
+      return idToken;
+    }
+  };
 };

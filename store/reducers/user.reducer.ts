@@ -44,7 +44,7 @@ const userReducer = (state: ReduxState = initialState, action: any) => {
       return { ...state, loggedInUser: null, idToken: null };
 
     case UPDATE_EMAIL:
-      console.log("action.payload", action.payload.email);
+      // console.log("action.payload", action.payload.email);
       return { ...state, loggedInUser: action.payload };
 
     default:
