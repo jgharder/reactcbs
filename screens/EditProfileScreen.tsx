@@ -10,11 +10,19 @@ const EditProfileScreen = () => {
   const user = useSelector((state: RootState) => state.user.loggedInUser);
   const [email, setEmail] = React.useState(user.email);
 
+  
+  
   async function handleUpdateEmail(email: string) {
-    console.log("input field email", email);
-    const refreshedRespData = await dispatch(refreshIdToken(user.refreshToken));
-    console.log("refreshRespData(): ",refreshedRespData)
-    await dispatch(updateEmail(email, refreshedRespData));
+    console.log("handleUpdateEmail():", email, user);
+
+    dispatch(refreshIdToken(email, user.refreshToken));
+
+    // set timeout to wait for 500ms
+    setTimeout(() => {
+      dispatch(updateEmail(email, user.idToken, user.refreshToken));
+      console.log("log after dispatch refrshIdToken():",user)
+
+    }, 500);
   }
 
   function onChangeEmail(setter: any, event: any) {
