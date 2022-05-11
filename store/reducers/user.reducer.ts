@@ -7,6 +7,7 @@ import {
   UPDATE_DISPLAYNAME,
   UPDATE_EMAIL,
   UPDATE_IDTOKEN,
+  FETCH_USER
 } from "../actions/user.actions";
 
 interface ReduxState {
@@ -31,8 +32,7 @@ const userReducer = (state: ReduxState = initialState, action: any) => {
     case SIGNUP:
       return {
         ...state,
-        loggedInUser: action.payload.user,
-        idToken: action.payload.idToken,
+        loggedInUser: action.payload
       };
 
     case SIGNIN:
@@ -48,14 +48,15 @@ const userReducer = (state: ReduxState = initialState, action: any) => {
     case UPDATE_EMAIL:
       // console.log("action.payload", action.payload.email);
       return { ...state, loggedInUser: action.payload };
-      
-
 
     case UPDATE_IDTOKEN:
       // console.log("action.payload", action.payload.email);
       return { ...state, loggedInUser: action.payload.user, idToken: action.payload.idToken };
 
     case UPDATE_DISPLAYNAME:
+      return { ...state, loggedInUser: {...state.loggedInUser, displayName: action.payload} };
+
+    case FETCH_USER:
       return { ...state, loggedInUser: action.payload };
 
     default:

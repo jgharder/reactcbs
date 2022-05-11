@@ -1,8 +1,6 @@
 import { FirebaseSignupSuccess } from "../../entities/FirebaseSignupSuccess";
 import * as SecureStore from "expo-secure-store";
 import { User } from "../../entities/User";
-import { useSelector } from "react-redux";
-import { RootState } from "../../App";
 
 export const SIGNUP = "SIGNUP";
 export const SIGNIN = "SIGNIN";
@@ -11,7 +9,7 @@ export const SAVE_SECURE_STORAGE_USER = "SAVE_SECURE_STORAGE_USER";
 export const UPDATE_EMAIL = "UPDATE_EMAIL";
 export const UPDATE_IDTOKEN = "UPDATE_IDTOKEN";
 export const UPDATE_DISPLAYNAME = "UPDATE_DISPLAYNAME";
-
+export const FETCH_USER = "FETCH_USER";
 
 export const signup = (email: string, password: string) => {
   return async (dispatch: any) => {
@@ -37,14 +35,14 @@ export const signup = (email: string, password: string) => {
       //dispatch({type: SIGNUP_FAILED, payload: 'something'})
     } else {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
-      // console.log("data from server", data);
+      console.log("data from signup():", data);
 
-      const user = new User(data.email, "", "");
+      const user = new User(data.email, data.refreshToken, data.idToken, "Pick a display name");
 
       await SecureStore.setItemAsync("idToken", data.idToken);
       await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
 
-      dispatch({ type: SIGNUP, payload: { user, idToken: data.idToken } });
+      dispatch({ type: SIGNUP, payload: user });
     }
   };
 };
@@ -73,9 +71,9 @@ export const signin = (email: string, password: string) => {
       //dispatch({type: SIGNUP_FAILED, payload: 'something'})
     } else {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
-      console.log("data from signin():",data);
+      console.log("data from signin():", data);
 
-      const user = new User(data.email, data.refreshToken, data.idToken);
+      const user = new User(data.email, data.refreshToken, data.idToken, data.displayName);
 
       await SecureStore.setItemAsync("idToken", data.idToken);
       await SecureStore.setItemAsync("refreshToken", data.refreshToken);
@@ -91,13 +89,17 @@ export const saveSecureStorageUser = (user: User, idToken: string) => {
 };
 
 export const signout = () => {
-   SecureStore.deleteItemAsync("idToken");
-   SecureStore.deleteItemAsync("user");
+  SecureStore.deleteItemAsync("idToken");
+  SecureStore.deleteItemAsync("user");
 
   return { type: SIGNOUT };
 };
 
-export const updateEmail = (email: string, idToken: string, refreshToken:string) => {
+export const updateEmail = (
+  email: string,
+  idToken: string,
+  refreshToken: string
+) => {
   return async (dispatch: any) => {
     const response = await fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
@@ -118,15 +120,15 @@ export const updateEmail = (email: string, idToken: string, refreshToken:string)
       console.log("error", await response.json());
     } else {
       const data = await response.json();
-     
+
       const user = new User(data.email, refreshToken, idToken);
 
-       dispatch({ type: UPDATE_EMAIL, payload: { email: data.email, idToken } });
+      dispatch({ type: UPDATE_EMAIL, payload: { email: data.email, idToken } });
     }
   };
 };
 
-export const refreshIdToken = (email:string, refreshToken: string) => {
+export const refreshIdToken = (email: string, refreshToken: string) => {
   return async (dispatch: any) => {
     const response = await fetch(
       "https://securetoken.googleapis.com/v1/token?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
@@ -144,25 +146,21 @@ export const refreshIdToken = (email:string, refreshToken: string) => {
 
     if (!response.ok) {
       console.log("error in refreshIdToken():", await response.json());
-      
     } else {
       const data = await response.json();
-     
-      
+
       const user = new User(email, data.refresh_token, data.id_token);
 
-       dispatch({ type: UPDATE_IDTOKEN, payload: {user, idToken: data.id_token } });
+      dispatch({
+        type: UPDATE_IDTOKEN,
+        payload: { user, idToken: data.id_token },
+      });
     }
   };
 };
 
-export const updateDisplayName = (displayName: string) => {
-  
-
+export const updateDisplayName = (displayName: string, idToken: string, refreshToken:string) => {
   return async (dispatch: any) => {
-
-    const user = useSelector((state: RootState) => state.user.loggedInUser);
-    
     const response = await fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
       {
@@ -171,22 +169,53 @@ export const updateDisplayName = (displayName: string) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          idToken: user.idToken,
+          idToken: idToken,
           displayName: displayName,
           returnSecureToken: true,
         }),
       }
-      
     );
     if (!response.ok) {
       console.log("error in updateDisplayName():", await response.json());
     } else {
       const data = await response.json();
-      const user = new User(data.email, data.refreshToken, data.idToken, data.displayName);
-      console.log(data)
-      dispatch({ type: UPDATE_DISPLAYNAME, payload: user });
-    }
-    
-  }
+      console.log("data from updateDisplayName():", data)
+      
+      const user = new User(data.email, refreshToken, idToken, data.displayName);
 
-}
+      await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
+      dispatch({ type: UPDATE_DISPLAYNAME, payload: data.displayName });
+    }
+  };
+};
+
+export const fetchUser = (idToken: string) => {
+  return async (dispatch: any) => {
+    const response = await fetch(
+      "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idToken: idToken,
+        }),
+      }
+    );
+    if (!response.ok) {
+      console.log("error in fetchUser():", await response.json());
+    } else {
+      const data = await response.json();
+      const user = new User(
+        data.users[0].email,
+        data.users[0].refreshToken,
+        data.users[0].idToken,
+        data.users[0].displayName
+      );
+
+      await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
+      dispatch({ type: FETCH_USER, payload: data });
+    }
+  };
+};
