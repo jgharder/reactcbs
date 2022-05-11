@@ -4,6 +4,7 @@ import {
   SIGNIN,
   SIGNOUT,
   SIGNUP,
+  UPDATE_DISPLAYNAME,
   UPDATE_EMAIL,
   UPDATE_IDTOKEN,
 } from "../actions/user.actions";
@@ -47,10 +48,15 @@ const userReducer = (state: ReduxState = initialState, action: any) => {
     case UPDATE_EMAIL:
       // console.log("action.payload", action.payload.email);
       return { ...state, loggedInUser: action.payload };
+      
+
 
     case UPDATE_IDTOKEN:
       // console.log("action.payload", action.payload.email);
       return { ...state, loggedInUser: action.payload.user, idToken: action.payload.idToken };
+
+    case UPDATE_DISPLAYNAME:
+      return { ...state, loggedInUser: action.payload };
 
     default:
       return state;

@@ -1,6 +1,8 @@
 import { FirebaseSignupSuccess } from "../../entities/FirebaseSignupSuccess";
 import * as SecureStore from "expo-secure-store";
 import { User } from "../../entities/User";
+import { useSelector } from "react-redux";
+import { RootState } from "../../App";
 
 export const SIGNUP = "SIGNUP";
 export const SIGNIN = "SIGNIN";
@@ -8,6 +10,8 @@ export const SIGNOUT = "SIGNOUT";
 export const SAVE_SECURE_STORAGE_USER = "SAVE_SECURE_STORAGE_USER";
 export const UPDATE_EMAIL = "UPDATE_EMAIL";
 export const UPDATE_IDTOKEN = "UPDATE_IDTOKEN";
+export const UPDATE_DISPLAYNAME = "UPDATE_DISPLAYNAME";
+
 
 export const signup = (email: string, password: string) => {
   return async (dispatch: any) => {
@@ -87,13 +91,13 @@ export const saveSecureStorageUser = (user: User, idToken: string) => {
 };
 
 export const signout = () => {
-  SecureStore.deleteItemAsync("idToken");
-  SecureStore.deleteItemAsync("user");
+   SecureStore.deleteItemAsync("idToken");
+   SecureStore.deleteItemAsync("user");
 
   return { type: SIGNOUT };
 };
 
-export const updateEmail = (email: string, idToken: any, refreshToken:any) => {
+export const updateEmail = (email: string, idToken: string, refreshToken:string) => {
   return async (dispatch: any) => {
     const response = await fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
@@ -114,18 +118,8 @@ export const updateEmail = (email: string, idToken: any, refreshToken:any) => {
       console.log("error", await response.json());
     } else {
       const data = await response.json();
-
-      //console.log("idToken",idToken)
-      console.log("data from updateEmail():", data);
-      // console.log(user);
-
-      // const securestoreuser = await SecureStore.getItemAsync("user")
-      // const securestoreuserjson = JSON.parse(securestoreuser!);
-      // console.log("securestore" , securestoreuserjson);
      
       const user = new User(data.email, refreshToken, idToken);
-      await SecureStore.setItemAsync("idToken", idToken);
-      await SecureStore.setItemAsync("user", JSON.stringify(user));
 
        dispatch({ type: UPDATE_EMAIL, payload: { email: data.email, idToken } });
     }
@@ -153,14 +147,46 @@ export const refreshIdToken = (email:string, refreshToken: string) => {
       
     } else {
       const data = await response.json();
-      console.log("data from refreshIdToken(): ", data);
+     
       
       const user = new User(email, data.refresh_token, data.id_token);
-      await SecureStore.setItemAsync("idToken", data.id_token);
-      await SecureStore.setItemAsync("refreshToken", data.refresh_token);
-      await SecureStore.setItemAsync("user", JSON.stringify(user));
 
        dispatch({ type: UPDATE_IDTOKEN, payload: {user, idToken: data.id_token } });
     }
   };
 };
+
+export const updateDisplayName = (displayName: string) => {
+  
+
+  return async (dispatch: any) => {
+
+    const user = useSelector((state: RootState) => state.user.loggedInUser);
+    
+    const response = await fetch(
+      "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idToken: user.idToken,
+          displayName: displayName,
+          returnSecureToken: true,
+        }),
+      }
+      
+    );
+    if (!response.ok) {
+      console.log("error in updateDisplayName():", await response.json());
+    } else {
+      const data = await response.json();
+      const user = new User(data.email, data.refreshToken, data.idToken, data.displayName);
+      console.log(data)
+      dispatch({ type: UPDATE_DISPLAYNAME, payload: user });
+    }
+    
+  }
+
+}
