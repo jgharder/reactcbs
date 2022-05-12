@@ -37,7 +37,12 @@ export const signup = (email: string, password: string) => {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
       console.log("data from signup():", data);
 
-      const user = new User(data.email, data.refreshToken, data.idToken, "Pick a display name");
+      const user = new User(
+        data.email,
+        data.refreshToken,
+        data.idToken,
+        "Pick a display name"
+      );
 
       await SecureStore.setItemAsync("idToken", data.idToken);
       await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
@@ -73,7 +78,12 @@ export const signin = (email: string, password: string) => {
       const data: FirebaseSignupSuccess = await response.json(); // json to javascript
       console.log("data from signin():", data);
 
-      const user = new User(data.email, data.refreshToken, data.idToken, data.displayName);
+      const user = new User(
+        data.email,
+        data.refreshToken,
+        data.idToken,
+        data.displayName
+      );
 
       await SecureStore.setItemAsync("idToken", data.idToken);
       await SecureStore.setItemAsync("refreshToken", data.refreshToken);
@@ -97,9 +107,10 @@ export const signout = () => {
 
 export const updateEmail = (
   email: string,
-  idToken: string,
-  refreshToken: string
+  refreshToken: string,
+  idToken: string
 ) => {
+  console.log(idToken);
   return async (dispatch: any) => {
     const response = await fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
@@ -117,18 +128,20 @@ export const updateEmail = (
     );
 
     if (!response.ok) {
-      console.log("error", await response.json());
+      console.log("error in updateEmail():", await response.json());
     } else {
       const data = await response.json();
+      console.log("data from updateEmail():", data);
 
-      const user = new User(data.email, refreshToken, idToken);
+      const user = new User(data.email, data.refreshToken, data.idToken, data.displayName);
+      await SecureStore.setItemAsync("user", JSON.stringify(user));
 
-      dispatch({ type: UPDATE_EMAIL, payload: { email: data.email, idToken } });
+      dispatch({ type: UPDATE_EMAIL, payload: user });
     }
   };
 };
 
-export const refreshIdToken = (email: string, refreshToken: string) => {
+export const refreshIdToken = (email: string, refreshToken: string, displayName: string) => {
   return async (dispatch: any) => {
     const response = await fetch(
       "https://securetoken.googleapis.com/v1/token?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
@@ -148,18 +161,24 @@ export const refreshIdToken = (email: string, refreshToken: string) => {
       console.log("error in refreshIdToken():", await response.json());
     } else {
       const data = await response.json();
+      console.log("data from refreshIdToken():", data);
 
-      const user = new User(email, data.refresh_token, data.id_token);
+      const user = new User(email, data.refresh_token, data.id_token, displayName);
+      await SecureStore.setItemAsync("user", JSON.stringify(user));
 
       dispatch({
         type: UPDATE_IDTOKEN,
-        payload: { user, idToken: data.id_token },
+        payload: user,
       });
     }
   };
 };
 
-export const updateDisplayName = (displayName: string, idToken: string, refreshToken:string) => {
+export const updateDisplayName = (
+  displayName: string,
+  idToken: string,
+  refreshToken: string
+) => {
   return async (dispatch: any) => {
     const response = await fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
@@ -179,43 +198,50 @@ export const updateDisplayName = (displayName: string, idToken: string, refreshT
       console.log("error in updateDisplayName():", await response.json());
     } else {
       const data = await response.json();
-      console.log("data from updateDisplayName():", data)
-      
-      const user = new User(data.email, refreshToken, idToken, data.displayName);
+      console.log("data from updateDisplayName():", data);
 
-      await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
+      const user = new User(
+        data.email,
+        refreshToken,
+        idToken,
+        data.displayName
+      );
+
+      await SecureStore.setItemAsync("user", JSON.stringify(user));
       dispatch({ type: UPDATE_DISPLAYNAME, payload: data.displayName });
     }
   };
 };
 
-export const fetchUser = (idToken: string) => {
-  return async (dispatch: any) => {
-    const response = await fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          idToken: idToken,
-        }),
-      }
-    );
-    if (!response.ok) {
-      console.log("error in fetchUser():", await response.json());
-    } else {
-      const data = await response.json();
-      const user = new User(
-        data.users[0].email,
-        data.users[0].refreshToken,
-        data.users[0].idToken,
-        data.users[0].displayName
-      );
+// export const fetchUser = (idToken: string) => {
+//   return async (dispatch: any) => {
+//     const response = await fetch(
+//       "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDbKYBfJU472IlP9A5kE3FuW44-ukm_FBE",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           idToken: idToken,
+//         }),
+//       }
+//     );
+//     if (!response.ok) {
+//       console.log("error in fetchUser():", await response.json());
+//     } else {
+//       const data = await response.json();
+//       const user = new User(
+//         data.users[0].email,
+//         data.users[0].refreshToken,
+//         data.users[0].idToken,
+//         data.users[0].displayName
+//       );
 
-      await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
-      dispatch({ type: FETCH_USER, payload: data });
-    }
-  };
-};
+//       console.log("data from fetchUser():", data);
+
+//       await SecureStore.setItemAsync("user", JSON.stringify(user)); // convert user js-obj. to json
+//       dispatch({ type: FETCH_USER, payload: data });
+//     }
+//   };
+// };

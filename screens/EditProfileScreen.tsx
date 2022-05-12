@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, StyleSheet, SafeAreaView, Pressable } from "react-native";
 import Input from "../components/Input";
 import { RootState } from "../App";
@@ -16,9 +16,13 @@ const EditProfileScreen = () => {
   const [email, setEmail] = React.useState(user.email);
   const [displayName, setDisplayName] = React.useState(user.displayName);
 
-  function handleUpdateEmail(email: string) {
+  useEffect(() => {
+  dispatch(refreshIdToken(email, user.refreshToken, user.displayName));
+  }, [])
+  
+
+  async function handleUpdateEmail(email: string) {
     console.log("handleUpdateEmail():", email, user);
-    dispatch(refreshIdToken(email, user.refreshToken));
     dispatch(updateEmail(email, user.refreshToken, user.idToken));
   }
 
