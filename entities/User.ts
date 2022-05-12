@@ -1,18 +1,18 @@
 export class User {
-    email: string;
-    refreshToken: string;
-    idToken: string;
+    email?: string;
+    refreshToken?: string;
+    idToken?: string;
    
-    displayname?: string;
+    displayName?: string;
     photoUrl?: string
     
 
-    constructor(email: string, refreshToken: string ,idToken: string,displayname?: string, photoUrl?: string) {
+    constructor(email?: string, refreshToken?: string ,idToken?: string,displayName?: string, photoUrl?: string) {
         this.email = email;
         this.refreshToken = refreshToken;
 
         this.idToken = idToken;
-        this.displayname = displayname;
+        this.displayName = displayName;
         this.photoUrl = photoUrl;
     }
 }
