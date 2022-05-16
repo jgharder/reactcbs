@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ChatStackNavigator from './ChatStackNavigator';
-import HomeNavigator from './HomeNavigator';
+import HomeNavigator from './HomeStackNavigator';
 import ProfileScreen from '../../screens/ProfileScreen';
 import ProfileStackNavigator from './ProfileStackNavigator';
 

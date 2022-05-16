@@ -12,10 +12,9 @@ function ProfileStackNavigator() {
         headerTransparent: true,
         headerTitle: ""
       }}
-    >
+      >
       <Stack.Screen name="YourProfile" component={ProfileScreen} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-      
     </Stack.Navigator>
   );
 }

@@ -8,4 +8,6 @@ export type StackParamList = {
     EditProfile: undefined;
     Profile: undefined;
     YourProfile: undefined;
+    HomeScreen: undefined;
+    CreateEvent: undefined;
 }
