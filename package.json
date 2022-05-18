@@ -10,6 +10,7 @@
     "hello": "expo start"
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "4.0.0",
     "@react-navigation/bottom-tabs": "^6.2.0",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "6.5.0",
@@ -23,6 +24,7 @@
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
     "react-native-web": "0.17.1",
+    "react-query": "^3.39.0",
     "react-redux": "^7.2.6",
     "redux": "^4.1.2",
     "redux-thunk": "^2.4.1"

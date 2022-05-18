@@ -7,6 +7,10 @@ import ReduxThunk from "redux-thunk";
 import chatReducer from "./store/reducers/chat.reducer";
 import userReducer from "./store/reducers/user.reducer";
 import Index from "./components/Index";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient()
+ 
 
 
 
@@ -24,10 +28,12 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 export default function App() {
   return (
+    <QueryClientProvider client={queryClient}> 
     <Provider store={store}>
       <NavigationContainer>
         <Index/> 
       </NavigationContainer>
     </Provider>
+    </QueryClientProvider>
   );
 }

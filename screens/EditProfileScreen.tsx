@@ -31,12 +31,9 @@ const EditProfileScreen = () => {
     dispatch(updateDisplayName(displayName, user.idToken, user.refreshToken));
   }
 
-  function onChangeEmail(setter: any, event: any) {
-    const value = event.nativeEvent.text;
-    setter(value);
-  }
+  
 
-  function onChangeDisplayName(setter: any, event: any) {
+  function onChange(setter: any, event: any) {
     const value = event.nativeEvent.text;
     setter(value);
   }
@@ -47,7 +44,7 @@ const EditProfileScreen = () => {
         title="Change your display name"
         value={displayName}
         onChange={(event) => {
-          onChangeDisplayName(setDisplayName, event);
+          onChange(setDisplayName, event);
         }}
         errorMessage="Please enter a prefered display name"
       />
@@ -65,7 +62,7 @@ const EditProfileScreen = () => {
         title="What is your email?"
         value={email}
         onChange={(event) => {
-          onChangeEmail(setEmail, event);
+          onChange(setEmail, event);
         }}
         errorMessage="Please enter your email"
       />

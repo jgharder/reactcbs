@@ -21,7 +21,7 @@ const Input = ({
             <Text>
                 {title}
             </Text>
-            <TextInput value={value} onChange={onChange} />
+            <TextInput value={value} onChange={onChange} style={styles.textInput}/>
             {!value ? <Text style={{color: "red"}}>{errorMessage}</Text>: <Text></Text>}
         </SafeAreaView>
 
@@ -34,7 +34,15 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
+        margin: 10,
+        padding: 10,
       },
+      textInput: {
+        borderColor: "black",
+        padding: 10,
+        borderWidth: 1
+
+      }
     });
 
 
