@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
       },
       textInput: {
         borderColor: "black",
-        padding: 10,
+        padding: 100,
         borderWidth: 1
 
       }
