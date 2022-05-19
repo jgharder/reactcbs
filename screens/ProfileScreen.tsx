@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   signOutBtnWrap: {
     position: "absolute",
-    bottom: 50,
+    bottom: 20,
   },
   profileWrapper: {
     flex: 1,

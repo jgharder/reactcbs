@@ -1,18 +1,18 @@
 import React, { useState } from 'react'
 import {
-  Button,
-  FlatList,
+
   StyleSheet,
   Text,
-  TextInput,
+
   SafeAreaView,
   Pressable,
   View,
+  Platform,
 } from "react-native";
 import Input from '../components/Input'
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { useAddEvent } from '../hooks/UseEventData';
 import { Event } from '../entities/Event';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CreateEvent = () => {
 
@@ -20,16 +20,17 @@ const CreateEvent = () => {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
+  const [startDate, setStartDate] = useState(new Date(Date.now()));
+  const [endDate, setEndDate] = useState(new Date(Date.now()));
+  const [date, setDate] = useState();
 
   const onChangeCreateEvent = (setter: any, event: any) => {
     const value = event.nativeEvent.text;
     setter(value);
   }
 
-  const handleUseAddEvent = ({ title, description, startDate, endDate }: { title: string, description: string, startDate: string, endDate: string }) => {
+  const handleUseAddEvent = ({ title, description, startDate, endDate }: { title: string, description: string, startDate: Date, endDate: Date }) => {
+    console.log(new Event(title, description, startDate, endDate))
     mutate({ event: new Event(title, description, startDate, endDate) });
   }
 
@@ -38,7 +39,7 @@ const CreateEvent = () => {
 
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <Input
         title="Enter event title"
         value={title}
@@ -47,52 +48,47 @@ const CreateEvent = () => {
         }}
         errorMessage="Please enter a title"
       />
+      <View style={styles.descriptionInput}>
+        <Input
+          title="Enter event description"
+          value={description}
+          onChange={(event) => {
+            onChangeCreateEvent(setDescription, event);
+          }}
+          errorMessage="Please enter a description"
+        />
+      </View>
+      <View style={styles.datePickerContainer}>
+        <Text style={styles.datePickerHeadline}>Event start</Text>
+        <DateTimePicker
+          value={startDate}
+          mode={Platform.OS === 'ios' ? 'datetime' : 'date'}
+          onChange={(event: any, value: any) => {
+            setStartDate(value);
+          }}
+          style={styles.datePicker} />
+      </View>
 
-      <Input
-        title="Enter event description"
-        value={description}
-        onChange={(event) => {
-          onChangeCreateEvent(setDescription, event);
-        }}
-        errorMessage="Please enter a description"
-      />
-      <Input
-        title="Enter event description"
-        value={startDate}
-        onChange={(event) => {
-          onChangeCreateEvent(setStartDate, event);
-        }}
-        errorMessage="Please enter a description"
-      />
-      <Input
-        title="Enter event description"
-        value={endDate}
-        onChange={(event) => {
-          onChangeCreateEvent(setEndDate, event);
-        }}
-        errorMessage="Please enter a description"
-      />
-      {/* <DateTimePicker
-        mode="date"
-        value={startDate}
-        onChange={(event: any) => { setStartDate(event.nativeEvent.timestamp) }}
-      />
-
-      <DateTimePicker
-        mode="date"
-        value={endDate}
-        onChange={(event: any) => { setEndDate(event.nativeEvent.timestamp) }}
-      /> */}
-
-      <Text
+      <View style={styles.datePickerContainer}>
+        <Text style={styles.datePickerHeadline}>Event end</Text>
+        <DateTimePicker
+          value={endDate}
+          mode={Platform.OS === 'ios' ? 'datetime' : 'date'}
+          onChange={(event: any, value: any) => {
+            setEndDate(value);
+          }}
+          style={styles.datePicker} />
+      </View>
+      <Pressable style={styles.createEventBtn}
         onPress={() => {
 
           handleUseAddEvent({ title, description, startDate, endDate })
 
         }}
       >
-        Confirm
-      </Text>
+        <Text style={styles.createEventBtnTxt}> Confirm </Text>
+      </Pressable>
+
 
     </SafeAreaView>
   )
@@ -101,7 +97,43 @@ const CreateEvent = () => {
 export default CreateEvent;
 
 const styles = StyleSheet.create({
-  datePickerStyle: {
-    width: 230,
-  }
+  datePickerHeadline: {
+    position: 'absolute',
+    top: 20,
+    left: 70,
+  },
+  datePickerContainer: {
+   flex: 1,
+   alignItems: 'center',
+  },
+  datePicker: {
+    width: 215,
+    height: 120,
+  
+  },
+  descriptionInput: {
+    height: 100,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  createEventBtn: {
+    marginTop: 20,
+    backgroundColor: "#5050A5",
+    borderRadius: 5,
+    borderColor: "#EEEEEE",
+    height: 61,
+    width: 360,
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  createEventBtnTxt: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+
 });

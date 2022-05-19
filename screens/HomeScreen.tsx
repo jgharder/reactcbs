@@ -40,18 +40,34 @@ export default function HomeScreen() {
         keyExtractor={(item: any) => item.id}
         style={styles.eventList}
       />
-      <Pressable
+
+      <Pressable style={styles.createNewEventBtn}
         onPress={() => {
           navigation.navigate("CreateEvent");
         }}
       >
-        <Text>Create new event</Text>
+        <Text style={styles.createNewEventBtnTxt} >Create new event</Text>
       </Pressable>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  createNewEventBtn: {
+    marginTop: 20,
+    backgroundColor: "#5050A5",
+    borderRadius: 5,
+    borderColor: "#EEEEEE",
+    height: 61,
+    width: 360,
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  createNewEventBtnTxt: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: "#fff",
