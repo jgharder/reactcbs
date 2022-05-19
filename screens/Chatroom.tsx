@@ -21,7 +21,7 @@ type ScreenNavigationType = NativeStackNavigationProp<
   "Chatroom"
 >;
 
-const ChatroomScreen = (props:any) => {
+const ChatroomScreen = (props: any) => {
   const navigation = useNavigation<ScreenNavigationType>();
   const [title, onChangeTitle] = React.useState("");
 
@@ -50,8 +50,8 @@ const ChatroomScreen = (props:any) => {
       <Pressable
         style={styles.chatroomItemContainer}
         onPress={() => {
-           {navigation.navigate("MessageScreen", { id: item.id } )
-           console.log("item.ID = ",item.id);
+          {
+            navigation.navigate("MessageScreen", { id: item.id })
           }
         }}
       >
@@ -64,15 +64,6 @@ const ChatroomScreen = (props:any) => {
           {item.timestamp.getFullYear()}
         </Text>
       </Pressable>
-
-      {/* <Pressable
-       style={styles.deleteBtn}
-        onPress={() => {
-          dispatch(deleteChatroom());
-        }}
-      >
-        <Text>Delete Chatroom</Text>
-      </Pressable> */}
     </>
   );
 
@@ -81,20 +72,47 @@ const ChatroomScreen = (props:any) => {
       <FlatList
         data={chatrooms}
         renderItem={renderChatroom}
-        keyExtractor={(item:any) => item.title} // chatroom titles must be unique when I do this.
+        keyExtractor={(item: any) => item.title} // chatroom titles must be unique when I do this.
       />
 
       <TextInput
+        style={styles.input}
         onChangeText={onChangeTitle}
         value={title}
         placeholder="Chatroom name"
       />
-      <Button title="Create chatroom" onPress={handleAddChatroom} />
+      <Pressable style={styles.createChatroomBtn} onPress={handleAddChatroom}>
+        <Text style={styles.createChatroomBtnTxt}>Create chatroom</Text>
+      </Pressable>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  createChatroomBtnTxt: {
+    color: "#fff",
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
+  createChatroomBtn: {
+    marginTop: 20,
+    backgroundColor: "#5050A5",
+    borderRadius: 5,
+    borderColor: "#EEEEEE",
+    height: 61,
+    width: 360,
+    justifyContent: "center",
+    marginBottom: 20,
+  },
+  input: {
+    borderColor: "#32305D",
+    borderWidth: 1,
+    width: 300,
+    borderRadius: 10,
+    textAlign: "center",
+    minHeight: 25,
+    maxHeight: 200,
+  },
   chatroomItemContainer: {
     marginVertical: 5,
     borderWidth: 1,
