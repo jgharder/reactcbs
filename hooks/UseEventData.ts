@@ -8,9 +8,10 @@ import { useSelector } from "react-redux";
 // }
 
 const fetchEvents = async (token: any) => {
+  console.log(token);
   // let { token } = getTokenFromStore();
   const response = await fetch(
-    `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/events.json?auth=${token}`
+    `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/events.json?auth=${token.queryKey[1]}`
   );
   const data = await response.json();
   let events = [];
@@ -28,7 +29,7 @@ const fetchEvents = async (token: any) => {
 const addEvent = async ({ event, token }: { event: Event, token: any }) => {
   // let { token } = getTokenFromStore();
   return await fetch(
-     `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/events.json?auth=${token}`,
+     `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/events.json?auth=${token.queryKey[1]}`,
     {
       method: "POST",
       headers: {
