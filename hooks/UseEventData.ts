@@ -7,10 +7,10 @@ import { useSelector } from "react-redux";
 //     return { token };
 // }
 
-const fetchEvents = async () => {
+const fetchEvents = async (token: any) => {
   // let { token } = getTokenFromStore();
   const response = await fetch(
-    "https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/events.json"
+    `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/events.json?auth=${token}`
   );
   const data = await response.json();
   let events = [];
@@ -25,10 +25,10 @@ const fetchEvents = async () => {
   return events;
 };
 
-const addEvent = async ({ event }: { event: Event }) => {
+const addEvent = async ({ event, token }: { event: Event, token: any }) => {
   // let { token } = getTokenFromStore();
   return await fetch(
-    "https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/events.json",
+     `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/events.json?auth=${token}`,
     {
       method: "POST",
       headers: {
@@ -41,8 +41,8 @@ const addEvent = async ({ event }: { event: Event }) => {
   );
 };
 
-export const useGetEvents = () => {
-  return useQuery("events", fetchEvents);
+export const useGetEvents = (token: any) => {
+  return useQuery(["events", token], fetchEvents);
 };
 
 export const useAddEvent = () => {

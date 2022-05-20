@@ -13,6 +13,8 @@ import { useQuery } from "react-query";
 import { StackParamList } from "../typings/navigations";
 import { useGetEvents } from "../hooks/UseEventData";
 import { Event } from "../entities/Event";
+import { User } from "../entities/User";
+import { useSelector } from "react-redux";
 
 type ScreenNavigationType = NativeStackNavigationProp<
   StackParamList,
@@ -20,8 +22,9 @@ type ScreenNavigationType = NativeStackNavigationProp<
 >;
 
 export default function HomeScreen() {
+  const user: User = useSelector((state: any) => state.user.loggedInUser);
   const navigation = useNavigation<ScreenNavigationType>();
-  const {data}  = useGetEvents();
+  const {data}  = useGetEvents(user.idToken);
 
   const renderEvents = ({ item }: { item: Event }) => (
     <View style={styles.eventContainer}>

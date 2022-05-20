@@ -10,10 +10,10 @@ export const ADD_MESSAGE = "ADD_MESSAGE";
 export const fetchChatrooms = () => {
   return async (dispatch: any, getState: any) => {
     const token = getState().user.idToken;
+    console.log(token)
 
     const response = await fetch(
-      "https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/chatrooms.json?=auth" +
-        token,
+      `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/chatrooms.json?auth=${token}`,
       {
         method: "GET",
         headers: {
@@ -23,11 +23,11 @@ export const fetchChatrooms = () => {
     );
 
     if (!response.ok) {
-      //There was a problem..
-      //dispatch({type: FETCH_CHATROOM_FAILED, payload: 'something'})
+      console.log("Error fetching chatrooms", await response.json());
       dispatch({ type: FETCH_CHATROOMS, payload: [] });
     } else {
       const data = await response.json(); // json to javascript
+      console.log("data from fetchChatRooms():",data)
       let chatrooms: Chatroom[] = [];
       for (const key in data) {
         let obj = data[key];
