@@ -10,11 +10,7 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  saveSecureStorageUser,
-  signin,
-  signup,
-} from "../store/actions/user.actions";
+import { saveSecureStorageUser, signin } from "../store/actions/user.actions";
 import { StackParamList } from "../typings/navigations";
 import { Image } from "react-native";
 import * as SecureStorage from "expo-secure-store";
@@ -29,8 +25,6 @@ export default function SigninScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-  const loggedInUser = useSelector((state: any) => state.user.loggedInUser);
-  const token = useSelector((state: any) => state.user.idToken);
 
   async function readPersistedUserInfo() {
     const token = await SecureStorage.getItemAsync("idToken");
@@ -40,8 +34,6 @@ export default function SigninScreen() {
       user = JSON.parse(userJson);
     }
     if (user) {
-      // then we have a priv. login
-      // restore the signup by updating the redux store based on usre and token.
       dispatch(saveSecureStorageUser(user, token!));
     }
   }

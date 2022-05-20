@@ -2,17 +2,16 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect } from "react";
 import {
-  Button,
   FlatList,
   StyleSheet,
   Text,
   TextInput,
   SafeAreaView,
   Pressable,
+  View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { Chatroom } from "../entities/Chatroom";
-import { User } from "../entities/User";
 import { addChatroom, fetchChatrooms } from "../store/actions/chat.actions";
 import { StackParamList } from "../typings/navigations";
 
@@ -24,15 +23,8 @@ type ScreenNavigationType = NativeStackNavigationProp<
 const ChatroomScreen = (props: any) => {
   const navigation = useNavigation<ScreenNavigationType>();
   const [title, onChangeTitle] = React.useState("");
-
-  const chat = useSelector(
-    (state: any) => state.chat
-  );
-
+  const chat = useSelector((state: any) => state.chat);
   const chatrooms: Chatroom[] = chat.chatrooms;
-
-  const user: User = useSelector((state: any) => state.user.loggedInUser);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -46,25 +38,26 @@ const ChatroomScreen = (props: any) => {
   };
 
   const renderChatroom = ({ item }: { item: Chatroom }) => (
-    <>
+    <View>
       <Pressable
         style={styles.chatroomItemContainer}
         onPress={() => {
           {
-            navigation.navigate("MessageScreen", { id: item.id })
+            navigation.navigate("MessageScreen", { id: item.id });
           }
         }}
       >
         <Text style={styles.chatroomItemTitle}>{item.title}</Text>
         <Text style={styles.chatroomItemTime}>
-          {item.timestamp.getHours()}:{item.timestamp.getMinutes().toString().padStart(2, '0')}
+          {item.timestamp.getHours()}:
+          {item.timestamp.getMinutes().toString().padStart(2, "0")}
         </Text>
         <Text style={styles.chatroomItemDate}>
           {item.timestamp.getDate()}/{item.timestamp.getMonth()}/
           {item.timestamp.getFullYear()}
         </Text>
       </Pressable>
-    </>
+    </View>
   );
 
   return (
@@ -86,7 +79,7 @@ const ChatroomScreen = (props: any) => {
       </Pressable>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   createChatroomBtnTxt: {
@@ -150,6 +143,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-
 
 export default ChatroomScreen;

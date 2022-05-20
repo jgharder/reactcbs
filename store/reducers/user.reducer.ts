@@ -7,7 +7,6 @@ import {
   UPDATE_DISPLAYNAME,
   UPDATE_EMAIL,
   UPDATE_IDTOKEN,
-  FETCH_USER
 } from "../actions/user.actions";
 
 interface ReduxState {
@@ -47,20 +46,32 @@ const userReducer = (state: ReduxState = initialState, action: any) => {
       return { ...state, loggedInUser: null, idToken: null };
 
     case UPDATE_EMAIL:
-      // console.log("action.payload", action.payload.email);
-      return { ...state, loggedInUser: {...state.loggedInUser, refreshToken: action.payload.refreshToken, email: action.payload.email, idToken: action.payload.idToken} };
+      return {
+        ...state,
+        loggedInUser: {
+          ...state.loggedInUser,
+          refreshToken: action.payload.refreshToken,
+          email: action.payload.email,
+          idToken: action.payload.idToken,
+        },
+      };
 
     case UPDATE_IDTOKEN:
-      // console.log("action.payload", action.payload.email);
-      return { ...state, loggedInUser: {...state.loggedInUser, refreshToken: action.payload.refreshToken, email: action.payload.email, idToken: action.payload.idToken} };
+      return {
+        ...state,
+        loggedInUser: {
+          ...state.loggedInUser,
+          refreshToken: action.payload.refreshToken,
+          email: action.payload.email,
+          idToken: action.payload.idToken,
+        },
+      };
 
     case UPDATE_DISPLAYNAME:
-      return { ...state, loggedInUser: {...state.loggedInUser, displayName: action.payload} };
-
-    // case FETCH_USER:
-    //   return { ...state, loggedInUser: action.payload }; 
-    // virker ikke - får ikke idtoken retur fra firebase, så hvis den skal virke skal vi ikke overskrive idtoken
-
+      return {
+        ...state,
+        loggedInUser: { ...state.loggedInUser, displayName: action.payload },
+      };
     default:
       return state;
   }

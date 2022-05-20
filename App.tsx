@@ -9,31 +9,24 @@ import userReducer from "./store/reducers/user.reducer";
 import Index from "./components/Index";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-const queryClient = new QueryClient()
- 
-
-
-
+const queryClient = new QueryClient();
 
 const rootReducer = combineReducers({
   chat: chatReducer,
   user: userReducer,
-  // posts: PostReducer
 });
-export type RootState = ReturnType<typeof rootReducer>
-
+export type RootState = ReturnType<typeof rootReducer>;
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
-// const store = createStore(rootReducer);
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}> 
-    <Provider store={store}>
-      <NavigationContainer>
-        <Index/> 
-      </NavigationContainer>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <NavigationContainer>
+          <Index />
+        </NavigationContainer>
+      </Provider>
     </QueryClientProvider>
   );
 }

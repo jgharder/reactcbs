@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   Text,
@@ -12,15 +13,21 @@ import { useAddEvent } from "../hooks/UseEventData";
 import { Event } from "../entities/Event";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useSelector } from "react-redux";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackParamList } from "../typings/navigations";
+
+type ScreenNavigationType = NativeStackNavigationProp<
+  StackParamList,
+  "CreateEvent"
+>;
 
 const CreateEvent = () => {
+  const navigation = useNavigation<ScreenNavigationType>();
   const { mutate } = useAddEvent();
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [startDate, setStartDate] = useState(new Date(Date.now()));
   const [endDate, setEndDate] = useState(new Date(Date.now()));
-  const [date, setDate] = useState();
   const token = useSelector((state: any) => state.user.loggedInUser.idToken);
 
   const onChangeCreateEvent = (setter: any, event: any) => {
@@ -67,7 +74,7 @@ const CreateEvent = () => {
         <DateTimePicker
           value={startDate}
           mode={Platform.OS === "ios" ? "datetime" : "date"}
-          onChange={(event: any, value: any) => {
+          onChange={(value: any) => {
             setStartDate(value);
           }}
           style={styles.datePicker}
@@ -79,7 +86,7 @@ const CreateEvent = () => {
         <DateTimePicker
           value={endDate}
           mode={Platform.OS === "ios" ? "datetime" : "date"}
-          onChange={(event: any, value: any) => {
+          onChange={(value: any) => {
             setEndDate(value);
           }}
           style={styles.datePicker}
@@ -89,6 +96,7 @@ const CreateEvent = () => {
         style={styles.createEventBtn}
         onPress={() => {
           handleUseAddEvent({ title, description, startDate, endDate });
+          navigation.navigate("HomeScreen")
         }}
       >
         <Text style={styles.createEventBtnTxt}> Confirm </Text>
