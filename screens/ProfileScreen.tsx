@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   Text,
   SafeAreaView,
@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { StackParamList } from "../typings/navigations";
 import SignoutBtn from "../components/SignoutBtn";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../App";
 
 type ScreenNavigationType = NativeStackNavigationProp<
@@ -19,12 +19,9 @@ type ScreenNavigationType = NativeStackNavigationProp<
 >;
 
 export default function ProfileScreen() {
-
   const navigation = useNavigation<ScreenNavigationType>();
 
   const user = useSelector((state: RootState) => state.user.loggedInUser);
-  
-  
 
   return (
     <SafeAreaView style={styles.container}>

@@ -16,14 +16,12 @@ import { Chatroom } from "../entities/Chatroom";
 const MessageScreen = (props: any) => {
   const dispatch = useDispatch();
   const [title, onChangeTitle] = React.useState("");
-  const [text, onChangeText] = React.useState("");
-
   const { id } = props.route.params;
 
   useEffect(() => {
     dispatch(fetchMessages(id));
   }, []);
-
+  const user = useSelector((state: any) => state.user.loggedInUser);
   const chatMessages = useSelector((state: any) => state.chat.chatrooms).find(
     (room: Chatroom) => room.id == id
   ).messages;
@@ -32,17 +30,16 @@ const MessageScreen = (props: any) => {
     const message: Message = new Message(
       title,
       Status.UNREAD,
-      text,
-      new Date()
+      new Date(),
+      user
     );
     dispatch(addMessage(id, message));
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={styles.messageContainer}>
-      <Text style={styles.textTitle}>
-        {item.title}
-      </Text>
+      <Text style={styles.messageUser}>{item.User?.displayName}</Text>
+      <Text style={styles.textTitle}>{item.title}</Text>
       <Text style={styles.time}>
         {item.timestamp.getHours()}:
         {item.timestamp.getMinutes().toString().padStart(2, "0")}
@@ -97,9 +94,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#5050A5",
     margin: 10,
     borderRadius: 5,
+    minWidth: 100,
     minHeight: 50,
     maxWidth: 300,
-    paddingVertical: 10,
+    paddingVertical: 20,
+  },
+
+  messageUser: {
+    fontWeight: "bold",
+    fontSize: 18,
+    marginVertical: 3,
+    marginHorizontal: 10,
+    maxWidth: "80%",
+    lineHeight: 21,
   },
 
   textTitle: {
@@ -107,7 +114,7 @@ const styles = StyleSheet.create({
     marginVertical: 3,
     marginHorizontal: 10,
     maxWidth: "80%",
-    lineHeight : 21,
+    lineHeight: 21,
   },
 
   timeStamp: {

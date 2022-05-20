@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 const EditProfileScreen = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user.loggedInUser);
-
   const [email, setEmail] = React.useState(user.email);
   const [displayName, setDisplayName] = React.useState(user.displayName);
 
@@ -20,18 +19,13 @@ const EditProfileScreen = () => {
     dispatch(refreshIdToken(email, user.refreshToken, user.displayName));
   }, [])
 
-
   async function handleUpdateEmail(email: string) {
-    console.log("handleUpdateEmail():", email, user);
-    dispatch(updateEmail(email, user.refreshToken, user.idToken));
+    dispatch(updateEmail(email, user.idToken));
   }
 
   function handleUpdateDisplayName(displayName: string) {
-    console.log("handleUpdateDisplayName():", displayName, user);
     dispatch(updateDisplayName(displayName, user.idToken, user.refreshToken));
   }
-
-
 
   function onChange(setter: any, event: any) {
     const value = event.nativeEvent.text;
@@ -55,7 +49,6 @@ const EditProfileScreen = () => {
           style={styles.confirmBtn}
           onPress={() => {
             handleUpdateDisplayName(displayName);
-            // signOut();
           }}
         >
           <Text style={styles.confirmBtnTxt}>Confirm</Text>
@@ -75,7 +68,6 @@ const EditProfileScreen = () => {
           style={styles.confirmBtn}
           onPress={() => {
             handleUpdateEmail(email);
-            // signOut();
           }}
         >
           <Text style={styles.confirmBtnTxt}>Confirm</Text>

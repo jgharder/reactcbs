@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   FlatList,
   Pressable,
@@ -9,7 +9,6 @@ import {
   Text,
   View,
 } from "react-native";
-import { useQuery } from "react-query";
 import { StackParamList } from "../typings/navigations";
 import { useGetEvents } from "../hooks/UseEventData";
 import { Event } from "../entities/Event";
@@ -23,9 +22,8 @@ type ScreenNavigationType = NativeStackNavigationProp<
 
 export default function HomeScreen() {
   const user: User = useSelector((state: any) => state.user.loggedInUser);
-  console.log(user.idToken)
   const navigation = useNavigation<ScreenNavigationType>();
-  const {data}  = useGetEvents(user.idToken);
+  const { data } = useGetEvents(user.idToken);
 
   const renderEvents = ({ item }: { item: Event }) => (
     <View style={styles.eventContainer}>
@@ -45,12 +43,13 @@ export default function HomeScreen() {
         style={styles.eventList}
       />
 
-      <Pressable style={styles.createNewEventBtn}
+      <Pressable
+        style={styles.createNewEventBtn}
         onPress={() => {
           navigation.navigate("CreateEvent");
         }}
       >
-        <Text style={styles.createNewEventBtnTxt} >Create new event</Text>
+        <Text style={styles.createNewEventBtnTxt}>Create new event</Text>
       </Pressable>
     </SafeAreaView>
   );
@@ -78,18 +77,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-    eventContainer: {
-
+  eventContainer: {
     flex: 1,
-    width:  300,
+    width: 300,
     margin: 10,
     padding: 10,
     backgroundColor: "#5050A5",
     borderRadius: 5,
-    },
-    textTitle: {
-    },
-    eventList: {
-
-    }
+  },
+  textTitle: {},
+  eventList: {},
 });
