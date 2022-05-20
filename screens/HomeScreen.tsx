@@ -23,7 +23,6 @@ type ScreenNavigationType = NativeStackNavigationProp<
 
 export default function HomeScreen() {
   const user: User = useSelector((state: any) => state.user.loggedInUser);
-  console.log(user.idToken)
   const navigation = useNavigation<ScreenNavigationType>();
   const {data}  = useGetEvents(user.idToken);
 

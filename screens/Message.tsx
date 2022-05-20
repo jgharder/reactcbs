@@ -23,7 +23,7 @@ const MessageScreen = (props: any) => {
   useEffect(() => {
     dispatch(fetchMessages(id));
   }, []);
-
+  const user = useSelector((state: any) => state.user.loggedInUser);
   const chatMessages = useSelector((state: any) => state.chat.chatrooms).find(
     (room: Chatroom) => room.id == id
   ).messages;
@@ -33,13 +33,16 @@ const MessageScreen = (props: any) => {
       title,
       Status.UNREAD,
       text,
-      new Date()
+      new Date(),
+      user
+    
     );
     dispatch(addMessage(id, message));
   };
 
   const renderMessage = ({ item }: { item: Message }) => (
     <View style={styles.messageContainer}>
+      <Text style={styles.messageUser}>{item.User?.displayName}</Text>
       <Text style={styles.textTitle}>
         {item.title}
       </Text>
@@ -97,9 +100,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#5050A5",
     margin: 10,
     borderRadius: 5,
+    minWidth: 100,
     minHeight: 50,
     maxWidth: 300,
-    paddingVertical: 10,
+    paddingVertical: 20,
+  },
+
+  messageUser:{
+
+    fontWeight: "bold",
+    fontSize: 18,
+    marginVertical: 3,
+    marginHorizontal: 10,
+    maxWidth: "80%",
+    lineHeight : 21,
   },
 
   textTitle: {

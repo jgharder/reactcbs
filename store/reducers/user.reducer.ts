@@ -32,7 +32,8 @@ const userReducer = (state: ReduxState = initialState, action: any) => {
     case SIGNUP:
       return {
         ...state,
-        loggedInUser: action.payload
+        loggedInUser: action.payload.user,
+        idToken: action.payload.idToken,
       };
 
     case SIGNIN:

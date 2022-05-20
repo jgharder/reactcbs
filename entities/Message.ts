@@ -1,10 +1,13 @@
+import {User} from "./User";
+
 export class Message {
   constructor(
     public title: string,
     public status: Status,
     public text: string,
     public timestamp: Date,
-    public id?: string
+    public User?: User,
+    public id?: string,
   ) {}
 }
 

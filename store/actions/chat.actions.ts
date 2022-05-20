@@ -6,11 +6,10 @@ export const FETCH_CHATROOMS = "FETCH_CHATROOMS";
 export const FETCH_MESSAGES = "FETCH_MESSAGES";
 export const ADD_MESSAGE = "ADD_MESSAGE";
 
-
 export const fetchChatrooms = () => {
   return async (dispatch: any, getState: any) => {
     const token = getState().user.idToken;
-    console.log(token)
+    console.log("fetchChatrooms() token:",token);
 
     const response = await fetch(
       `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/chatrooms.json?auth=${token}`,
@@ -27,22 +26,29 @@ export const fetchChatrooms = () => {
       dispatch({ type: FETCH_CHATROOMS, payload: [] });
     } else {
       const data = await response.json(); // json to javascript
-      console.log("data from fetchChatRooms():",data)
+      console.log("data from fetchChatRooms():", data);
       let chatrooms: Chatroom[] = [];
       for (const key in data) {
         let obj = data[key];
         let messages = [];
         for (const key2 in obj.messages) {
           let message = obj.messages[key2];
-          messages.push(new Message(message.title, message.status, message.text, new Date(message.timestamp), key2));
+          messages.push(
+            new Message(
+              message.title,
+              message.status,
+              message.text,
+              new Date(message.timestamp),
+              message.User,
+              key2
+            )
+          );
         }
         // create Chatroom objects and push them into the array chatrooms.
         chatrooms.push(
           new Chatroom(obj.title, messages, new Date(obj.timestamp), key)
         );
       }
-
-      
 
       // console.log("data from server", chatrooms);
 
@@ -95,10 +101,10 @@ export const addChatroom = (chatroom: Chatroom) => {
   };
 };
 
-
 export const fetchMessages = (id: string) => {
   return async (dispatch: any, getState: any) => {
     const token = getState().user.idToken;
+    const user = getState().user;
 
     const response = await fetch(
       `https://cbs-react-native-46638-default-rtdb.europe-west1.firebasedatabase.app/chatrooms/${id}/messages.json?auth=` +
@@ -113,8 +119,6 @@ export const fetchMessages = (id: string) => {
 
     if (!response.ok) {
       console.log("error fetching messages");
-      //dispatch({type: FETCH_CHATROOM_FAILED, payload: 'something'})
-      // dispatch({ type: FETCH_MESSAGES, payload: [] });
     } else {
       const data = await response.json(); // json to javascript
       let messages: Message[] = [];
@@ -126,14 +130,13 @@ export const fetchMessages = (id: string) => {
             obj.status,
             obj.message,
             new Date(obj.timestamp),
+            user,
             key
           )
         );
       }
       // console.log("data from server", messages);
-      dispatch({ type: FETCH_MESSAGES, payload: {messages, id} });
-
-      
+      dispatch({ type: FETCH_MESSAGES, payload: { messages, id } });
     }
   };
 };

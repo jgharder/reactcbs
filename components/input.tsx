@@ -45,11 +45,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     minHeight: 25,
     maxHeight: 200,
-
-
-    
-
-
   }
 });
 
