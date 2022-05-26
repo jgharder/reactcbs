@@ -74,8 +74,8 @@ const CreateEvent = () => {
         <DateTimePicker
           value={startDate}
           mode={Platform.OS === "ios" ? "datetime" : "date"}
-          onChange={(value: any) => {
-            setStartDate(value);
+          onChange={(event: any, date: any) => {
+            setStartDate(date);
           }}
           style={styles.datePicker}
         />
@@ -86,8 +86,8 @@ const CreateEvent = () => {
         <DateTimePicker
           value={endDate}
           mode={Platform.OS === "ios" ? "datetime" : "date"}
-          onChange={(value: any) => {
-            setEndDate(value);
+          onChange={(event: any, date:any) => {
+            setEndDate(date);
           }}
           style={styles.datePicker}
         />
